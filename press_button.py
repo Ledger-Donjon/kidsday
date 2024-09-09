@@ -41,7 +41,7 @@ three = two + right
 
 
 def move_relative(axe, direction):
-    delta = [Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 0.1)][axe] * direction
+    delta = [Vector(1, 0, 0), Vector(0, 1, 0), Vector(0, 0, 0.5)][axe] * direction
     cnc.position += delta
     cnc.wait_move_finished()
 

@@ -25,7 +25,9 @@ calibrated = None
 def move(axe, direction):
     if not calibrated:
         # The factor of move is from the little slider at the left of the joystick (axe 2)
-        factor = ((1.0 - joystick.get_axis(2)) + 1.0) * (y_sep / 2)
+        factor = (joystick.get_axis(2) - 1.0) * (y_sep / 2)
+        if axe == 0:
+            factor = -factor
         # Distance, according the the direction and the factor
         distance = direction * factor
         move_relative(axe, distance)
