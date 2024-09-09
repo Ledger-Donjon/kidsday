@@ -22,8 +22,8 @@ class MODEL(Enum):
 model = MODEL.IPHONE
 
 
-x_sep = 18.5 if model == MODEL.IPHONE else 15.0
-y_sep = 48 / 3 if model == MODEL.IPHONE else 15.0
+x_sep = 33.5 / 2 if model == MODEL.IPHONE else 15.0
+y_sep = 50 / 3 if model == MODEL.IPHONE else 15.0
 
 up = Vector(0, y_sep, 0)
 right = Vector(x_sep, 0, 0)
