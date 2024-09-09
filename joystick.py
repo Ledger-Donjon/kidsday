@@ -1,7 +1,7 @@
 import pygame
 from press_button import tap, unlock, move_above, move_relative
 from press_button import cnc
-from press_button import zero, one, two, three, four, five, six, seven, eight, nine
+from press_button import zero, one, two, three, four, five, six, seven, eight, nine, y_sep
 
 keypad = [
     [one, two, three],
@@ -25,7 +25,7 @@ calibrated = None
 def move(axe, direction):
     if not calibrated:
         # The factor of move is from the little slider at the left of the joystick (axe 2)
-        factor = joystick.get_axis(2) + 1.0
+        factor = (joystick.get_axis(2) + 1.0) * (y_sep / 2)
         # Distance, according the the direction and the factor
         distance = direction * factor
         move_relative(axe, distance)
