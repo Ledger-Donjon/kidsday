@@ -42,69 +42,91 @@ struct CustomButtonStyle: ButtonStyle {
 }
 
 
-class CodeHandler {
-    var numbers: [Int] = []
+class CodeHandler: ObservableObject {
+    var code = [4, 8, 6, 2]
+    @Published var numbers: [Int] = []
     func append(i: Int) {
         if numbers.count < 4 {
             numbers.append(i)
-            print(numbers)
         }
     }
     var isOK: Bool {
-        numbers == [4, 6, 5, 2]
+        numbers == code
+    }
+    
+    var timer: Timer?
+    func clearInFewSeconds() {
+        
     }
 }
 
-struct ContentView: View {
-    @State private var refreshView = false
-    let button_spacing = 20.0
-    let bullet_size = 20.0
-    var code_handler = CodeHandler()
+struct ResultView: View {
+    var code_handler: CodeHandler
+    let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
+    
+    @State var restant = 5
+    
+    var body: some View {
+            VStack(spacing: 100) {
+                if code_handler.isOK {
+                    Text("Bravo ! 👏").font(.largeTitle)
+                    Text("Tu as trouvé le code !").font(.title2)
+                } else {
+                    Text("Dommage...").font(.largeTitle)
+                    Text("\(code_handler.code.map(String.init).reduce("Le code était ", +))").font(.title2).monospacedDigit()
+                }
+                Text("Recommence dans \(restant) seconde\(restant > 1 ? "s":"") !")
+                    .font(.headline)
+                    .padding()
+                    .background(.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(50)
+                Text("Laisse aussi jouer tes copains !")
+                    .font(.headline)
+            }.frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(code_handler.isOK ? .green.opacity(0.8) : .red.opacity(0.6))
+                .onReceive(timer) { _ in
+                    restant -= 1
+                    if restant < 1 {
+                        code_handler.numbers.removeAll()
+                    }
+                }
+    }
+}
+
+struct PinEntryView: View {
+    private let button_spacing = 20.0
+    private let bullet_size = 20.0
+    
     func press(_ i: Int) {
         code_handler.append(i: i)
-        refreshView.toggle()
     }
-    func effacer() {
-        code_handler.numbers.removeLast()
-        refreshView.toggle()
-    }
+    
+    @StateObject var code_handler: CodeHandler
     var body: some View {
-        if code_handler.numbers.count == 4 {
-            VStack(spacing: 100) {
-                Text(code_handler.isOK ? "BRAVO !" : "DOMMAGE !" ).font(.largeTitle)
-                Button("Recommence !") {
-                    code_handler.numbers.removeAll()
-                    refreshView.toggle()
-                }
-                .font(.headline)
-                .padding()
-                .background(Color.gray)
-                .foregroundColor(Color.white)
-                .cornerRadius(50)
-            }
-        } else {
             VStack() {
-                Text("Saisissez le code").font(.title)
+                Text("🔐").font(.largeTitle).padding()
+                Text("Trouve le code").font(.title)
                 HStack(spacing: 20) {
                     if code_handler.numbers.count > 0 {
-                        Circle().frame(width: bullet_size)
+                        Circle()
                     } else {
-                        Circle().stroke(style: StrokeStyle())
+                        Circle().stroke(style: .init())
                     }
                     if code_handler.numbers.count > 1 {
-                        Circle().frame(width: bullet_size)
+                        Circle()
                     } else {
-                        Circle().stroke(style: StrokeStyle())
+                        Circle().stroke(style: .init())
                     }
                     if code_handler.numbers.count > 2 {
-                        Circle().frame(width: bullet_size)
+                        Circle()
                     } else {
-                        Circle().stroke(style: StrokeStyle())
+                        Circle().stroke(style: .init())
                     }
                     if code_handler.numbers.count > 3 {
-                        Circle().frame(width: bullet_size)
+                        Circle()
                     } else {
-                        Circle().stroke(style: StrokeStyle())
+                        Circle().stroke(style: .init())
                     }
                 }.frame(width: bullet_size*4+3*20, height: bullet_size)
                     .padding(.bottom, 40)
@@ -127,14 +149,21 @@ struct ContentView: View {
                     }
                     Button2(number: 0) { press(0) }
                 }
-                if code_handler.numbers.count > 0 {
-                    Button("Effacer") { effacer() }.padding(.top, 100)
-                } else {
-                    Button(" ") { }.padding(.top, 100)
-                }
             }
-            .padding()
-            .id(refreshView)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+}
+
+struct ContentView: View {
+    private var timer: Timer?
+    @StateObject var code_handler = CodeHandler()
+    var body: some View {
+        if code_handler.numbers.count == 4 {
+            ResultView(code_handler: code_handler)
+        } else {
+            PinEntryView(code_handler: code_handler).onAppear() {
+                UIScreen.main.brightness = 1.0
+            }
         }
     }
 }

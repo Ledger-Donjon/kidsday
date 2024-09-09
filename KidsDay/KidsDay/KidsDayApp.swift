@@ -12,6 +12,7 @@ struct KidsDayApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .statusBarHidden()
         }
     }
 }
