@@ -62,7 +62,8 @@ def process_button(e):
     if (e.type not in [pygame.JOYBUTTONDOWN]) or e.joy != 0 or e.button > 1:
         return
 
-    [press, swipe][e.button]()
+    # [press, swipe][e.button]()
+    press()
 
 
 def process_hat(e):
