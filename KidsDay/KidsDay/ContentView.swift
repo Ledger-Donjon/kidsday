@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct Button2: View {
+    // 
     var number: Int
     var text: String = ""
-    var clicked: (() -> Void) = {
-        print("PRESSED")
-    }
+    var clicked: (() -> Void)
     
     var body: some View {
         Button(action: clicked) {
@@ -52,11 +51,6 @@ class CodeHandler: ObservableObject {
     }
     var isOK: Bool {
         numbers == code
-    }
-    
-    var timer: Timer?
-    func clearInFewSeconds() {
-        
     }
 }
 
@@ -171,7 +165,6 @@ struct PinEntryView: View {
 }
 
 struct ContentView: View {
-    private var timer: Timer?
     @StateObject var code_handler = CodeHandler()
     var body: some View {
         if code_handler.numbers.count == 4 {
